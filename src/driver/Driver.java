@@ -12,6 +12,7 @@ public class Driver {
         Model myModel = new Model();
         Controller controller  = new Controller(myModel);
         PictureView pView = new PictureView(myModel, controller);
+        myModel.addObserver(pView);
         pView.setVisible(true);
 
     }

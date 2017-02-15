@@ -1,18 +1,14 @@
 package model;
 
-import com.sun.javafx.property.adapter.PropertyDescriptor;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Aaron on 2/11/2017.
  */
-public class Model {
+public class Model extends java.util.Observable{
     private int index = 0;
     private int numFiles = 0;
     private File directory;
@@ -26,6 +22,9 @@ public class Model {
 
     public void setIcon(ImageIcon icon) {
         this.icon = icon;
+        System.out.println("setting icon");
+        setChanged();
+        notifyObservers("newIcon");
     }
 
     ImageIcon icon;
@@ -68,6 +67,8 @@ public class Model {
 
     public void setDirectory(File directory) {
         this.directory = directory;
+        setChanged();
+        notifyObservers("directorySet");
     }
 
     public File[] getImageList() {
@@ -76,6 +77,7 @@ public class Model {
 
     public void setImageList(File[] imageList) {
         this.imageList = imageList;
+        this.numFiles = imageList.length;
     }
 
     public FileFilter getFilter() {

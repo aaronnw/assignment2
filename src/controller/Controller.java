@@ -5,8 +5,7 @@ import view.PictureView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 /**
  * Created by Aaron on 2/11/2017.
@@ -42,6 +41,57 @@ public class Controller{
             }
         };
     }
+    public ComponentListener imageResizedListener(){
+        return new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                setImage();
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
+            }
+        };
+    }
+    public MouseListener imageClickedListener(){
+        return new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                nextImage();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        };
+    }
     public ActionListener getExitListener(PictureView v){
         return new ActionListener() {
             @Override
@@ -57,17 +107,43 @@ public class Controller{
         m.setDirectory(chooser.getSelectedFile());
     }
     public void nextImage(){
+        if(m.getIcon() != null) {
+            int index = m.getIndex();
+            int numFiles = m.getNumFiles();
+            if (index < numFiles - 1) {
+                index++;
+                m.setIndex(index);
+            } else {
+                m.setIndex(0);
+            }
+            setImage();
+
+        }
 
     }
     public void previousImage(){
+        if(m.getIcon() != null) {
+            int index = m.getIndex();
+            int numFiles = m.getNumFiles();
+            if (index > 0) {
+                index--;
+                m.setIndex(index);
+            } else {
+                index = m.getNumFiles() - 1;
+                m.setIndex(index);
+            }
+            setImage();
 
+        }
     }
     public void updateImageList(){
+         System.out.println("update list");
          m.setImageList(m.getDirectory().listFiles(m.getFilter()));
     }
     public void setImage(){
         if(m.getDirectory()!= null && m.getNumFiles()!= 0){
             ImageIcon icon = new ImageIcon(m.getImageList()[m.getIndex()].getAbsolutePath());
+            System.out.println("set image");
             m.setIcon(icon);
         }
     }

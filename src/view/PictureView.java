@@ -7,12 +7,13 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Observable;
 
 
 /**
  * Created by Aaron on 2/11/2017.
  */
-public class PictureView extends JFrame implements Listener{
+public class PictureView extends JFrame implements java.util.Observer {
     private JPanel contentPane = new JPanel();
     private JPanel picPanel;
     private JPanel bottomPanel;
@@ -66,6 +67,7 @@ public class PictureView extends JFrame implements Listener{
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(0, 0));
         imageLabel = new JLabel("");
+        imageLabel.setLayout(new BorderLayout(0,0));
         icon = new ImageIcon();
     }
     public void createInterface(){
@@ -83,6 +85,7 @@ public class PictureView extends JFrame implements Listener{
         bottomPanel.add(controlPanel);
         bottomPanel.add(directoryLabel);
         imageLabel.setText("Use the File menu to select a directory with image files");
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         picPanel.add(imageLabel, BorderLayout.CENTER);
         contentPane.add(picPanel, BorderLayout.CENTER);
         contentPane.add(bottomPanel, BorderLayout.SOUTH);
@@ -98,6 +101,35 @@ public class PictureView extends JFrame implements Listener{
         mItemPrevious.setAccelerator(KeyStroke.getKeyStroke(37, 0));
         mItemSelect.addActionListener(c.getSelectFolderListener(chooser, mItemSelect));
         mItemExit.addActionListener(c.getExitListener(this));
+        imageLabel.addComponentListener(c.imageResizedListener());
+        imageLabel.addMouseListener(c.imageClickedListener());
 
+    }
+
+    @Override
+    public void update(Observable obs, Object obj) {
+        System.out.println("View updated");
+        if(obj.toString().equals("newIcon")){
+            imageLabel.setIcon(scaleImage(m.getIcon()));
+            imageLabel.setText("");
+        }
+        if(obj.toString().equals("directorySet")){
+            directoryLabel.setText(m.getDirectory().toString());
+        }
+    }
+    private ImageIcon scaleImage(ImageIcon old){
+        if(old.getImage() != null) {
+            //Get the original dimensions
+            double oldWidth = old.getIconWidth();
+            double oldHeight = old.getIconHeight();
+            //Find the aspect ratio
+            double ratio = oldWidth/oldHeight;
+            //Set the new width and height based on the ratio
+            double width  = Math.min(picPanel.getWidth(), picPanel.getHeight()*ratio);
+            double height = Math.min(picPanel.getHeight(), picPanel.getWidth()/ratio);
+            return new ImageIcon(old.getImage().getScaledInstance((int) width, (int) height, Image.SCALE_FAST));
+
+        }
+        return null;
     }
 }
