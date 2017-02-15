@@ -1,7 +1,13 @@
 package model;
 
+import com.sun.javafx.property.adapter.PropertyDescriptor;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Aaron on 2/11/2017.
@@ -12,8 +18,32 @@ public class Model {
     private File directory;
     private File[] imageList;
     private FileFilter filter;
+    private final String[] validextensions = ImageIO.getReaderFileSuffixes();
+
+    public ImageIcon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(ImageIcon icon) {
+        this.icon = icon;
+    }
+
+    ImageIcon icon;
 
     public Model(){
+        filter = new FileFilter(){
+            @Override
+            public boolean accept(File pathname){
+                String extension = getExtension(pathname);
+                //Check if the extension is in the valid list
+                for(String validext:validextensions){
+                    if(validext.equals(extension)){
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
     }
 
     public int getIndex() {
@@ -52,7 +82,12 @@ public class Model {
         return filter;
     }
 
-    public void setFilter(FileFilter filter) {
-        this.filter = filter;
+    public String getExtension(File f){
+        String name = f.toString();
+        if(!name.contains(".")){
+            return null;
+        }
+        return name.substring(name.lastIndexOf(".") +1);
     }
+
 }
