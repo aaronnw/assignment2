@@ -1,5 +1,3 @@
-package driver;
-
 import model.Model;
 import view.PictureView;
 import controller.Controller;

@@ -20,21 +20,21 @@ public class Controller{
         ssTimer = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                nextImage();
+                ssNext();
             }
         });
     }
-    public ActionListener getNextImageListener () {
+    public ActionListener getNextImageListener (PictureView v) {
         return new ActionListener() {
             @Override public void actionPerformed (ActionEvent e) {
-                nextImage();
+                nextImage(v);
             }
         };
     }
-    public ActionListener getPreviousImageListener () {
+    public ActionListener getPreviousImageListener (PictureView v) {
         return new ActionListener() {
             @Override public void actionPerformed (ActionEvent e) {
-                previousImage();
+                previousImage(v);
             }
         };
     }
@@ -75,7 +75,7 @@ public class Controller{
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                nextImage();
+                nextImage(v);
             }
 
             @Override
@@ -99,7 +99,7 @@ public class Controller{
             }
         };
     }
-    public MouseWheelListener wheelScrollListener(){
+    public MouseWheelListener wheelScrollListener(PictureView v){
         return new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -110,9 +110,9 @@ public class Controller{
                     return;
                 }
                 if (e.getWheelRotation() > 0) {
-                    nextImage();
+                    nextImage(v);
                 } else {
-                    previousImage();
+                    previousImage(v);
                 }
                 m.setDelay(System.currentTimeMillis());
             }
@@ -172,7 +172,11 @@ public class Controller{
         m.setDirectory(chooser.getSelectedFile());
     }
     public void nextImage(PictureView v){
-
+        System.out.println("next");
+        if(ssTimer.isRunning()){
+            stopSlideshow(v);
+            return;
+        }
         if(m.getIcon() != null) {
             int index = m.getIndex();
             int numFiles = m.getNumFiles();
@@ -187,7 +191,12 @@ public class Controller{
         }
 
     }
-    public void previousImage(){
+    public void previousImage(PictureView v){
+        System.out.println("prev");
+        if(ssTimer.isRunning()){
+            stopSlideshow(v);
+            return;
+        }
         if(m.getIcon() != null) {
             int index = m.getIndex();
             if (index > 0) {
@@ -202,13 +211,11 @@ public class Controller{
         }
     }
     public void updateImageList(){
-         System.out.println("update list");
          m.setImageList(m.getDirectory().listFiles(m.getFilter()));
     }
     public void setImage(){
         if(m.getDirectory()!= null && m.getNumFiles()!= 0){
             ImageIcon icon = new ImageIcon(m.getImageList()[m.getIndex()].getAbsolutePath());
-            System.out.println("set image");
             m.setIcon(icon);
         }
     }
@@ -224,6 +231,19 @@ public class Controller{
         if(ssTimer.isRunning()){
             v.setExtendedState(m.getPrevWindowState());
             ssTimer.stop();
+        }
+    }
+    public void ssNext(){
+        if(m.getIcon() != null) {
+            int index = m.getIndex();
+            int numFiles = m.getNumFiles();
+            if (index < numFiles - 1) {
+                index++;
+                m.setIndex(index);
+            } else {
+                m.setIndex(0);
+            }
+            setImage();
         }
     }
 }

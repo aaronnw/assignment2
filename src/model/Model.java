@@ -2,8 +2,7 @@ package model;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
 import java.io.File;
 import java.io.FileFilter;
 
@@ -100,7 +99,6 @@ public class Model extends java.util.Observable{
 
     public void setIcon(ImageIcon icon) {
         this.icon = icon;
-        System.out.println("setting icon");
         setChanged();
         notifyObservers("newIcon");
     }

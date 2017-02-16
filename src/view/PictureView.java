@@ -31,7 +31,6 @@ public class PictureView extends JFrame implements java.util.Observer {
     private JFileChooser chooser;
     private JLabel imageLabel;
     private ImageIcon icon;
-    private ImageIcon scaledImage;
     Model m;
     Controller c;
 
@@ -93,24 +92,23 @@ public class PictureView extends JFrame implements java.util.Observer {
         this.pack();
     }
     public void setListeners(){
-        bNext.addActionListener(c.getNextImageListener());
-        mItemNext.addActionListener(c.getNextImageListener());
-        bPrevious.addActionListener(c.getPreviousImageListener());
-        mItemPrevious.addActionListener(c.getPreviousImageListener());
+        bNext.addActionListener(c.getNextImageListener(this));
+        mItemNext.addActionListener(c.getNextImageListener(this));
+        bPrevious.addActionListener(c.getPreviousImageListener(this));
+        mItemPrevious.addActionListener(c.getPreviousImageListener(this));
         mItemNext.setAccelerator(KeyStroke.getKeyStroke(39, 0));
         mItemPrevious.setAccelerator(KeyStroke.getKeyStroke(37, 0));
         mItemSelect.addActionListener(c.getSelectFolderListener(chooser, mItemSelect));
         mItemExit.addActionListener(c.getExitListener(this));
         imageLabel.addComponentListener(c.imageResizedListener());
         imageLabel.addMouseListener(c.imageClickedListener(this));
-        imageLabel.addMouseWheelListener(c.wheelScrollListener());
+        imageLabel.addMouseWheelListener(c.wheelScrollListener(this));
         this.addMouseListener(c.mouseMovementListener(this));
         bSS.addActionListener(c.slideshowListener(this));
     }
 
     @Override
     public void update(Observable obs, Object obj) {
-        System.out.println("View updated");
         if(obj.toString().equals("newIcon")){
             imageLabel.setIcon(scaleImage(m.getIcon()));
             imageLabel.setText("");
