@@ -211,11 +211,11 @@ public class Controller{
         }
     }
     public void updateImageList(){
-         m.setImageList(m.getDirectory().listFiles(m.getFilter()));
+         m.setFileList(m.getDirectory().listFiles(m.getFilter()));
     }
     public void setImage(){
         if(m.getDirectory()!= null && m.getNumFiles()!= 0){
-            ImageIcon icon = new ImageIcon(m.getImageList()[m.getIndex()].getAbsolutePath());
+            ImageIcon icon = new ImageIcon(m.getFileList()[m.getIndex()].getAbsolutePath());
             m.setIcon(icon);
         }
     }

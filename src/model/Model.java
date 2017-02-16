@@ -13,7 +13,8 @@ public class Model extends java.util.Observable{
     private int index = 0;
     private int numFiles = 0;
     private File directory;
-    private File[] imageList;
+    private File[] fileList;
+    private Image[] imageList;
     private FileFilter filter;
     private final String[] validextensions = ImageIO.getReaderFileSuffixes();
     private int prevWindowState;
@@ -64,13 +65,13 @@ public class Model extends java.util.Observable{
         notifyObservers("directorySet");
     }
 
-    public File[] getImageList() {
-        return imageList;
+    public File[] getFileList() {
+        return fileList;
     }
 
-    public void setImageList(File[] imageList) {
-        this.imageList = imageList;
-        this.numFiles = imageList.length;
+    public void setFileList(File[] fileList) {
+        this.fileList = fileList;
+        this.numFiles = fileList.length;
     }
 
     public FileFilter getFilter() {
