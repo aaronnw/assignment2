@@ -103,7 +103,8 @@ public class PictureView extends JFrame implements java.util.Observer {
         mItemExit.addActionListener(c.getExitListener(this));
         imageLabel.addComponentListener(c.imageResizedListener());
         imageLabel.addMouseListener(c.imageClickedListener());
-
+        imageLabel.addMouseWheelListener(c.wheelScrollListener());
+        bSS.addActionListener(c.slideshowListener());
     }
 
     @Override

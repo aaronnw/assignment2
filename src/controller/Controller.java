@@ -92,12 +92,39 @@ public class Controller{
             }
         };
     }
+    public MouseWheelListener wheelScrollListener(){
+        return new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                 /*If time since the last movement is >800 ms
+                        Prevents scrolling too fast on a touch-pad
+                     */
+                if(m.getDelay() != 0 && (System.currentTimeMillis() -m.getDelay() <800)){
+                    return;
+                }
+                if (e.getWheelRotation() > 0) {
+                    nextImage();
+                } else {
+                    previousImage();
+                }
+                m.setDelay(System.currentTimeMillis());
+            }
+        };
+    }
     public ActionListener getExitListener(PictureView v){
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Select folder method
                 v.dispose();
+            }
+        };
+    }
+    public ActionListener slideshowListener(){
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startSlideshow();
             }
         };
     }
@@ -146,5 +173,11 @@ public class Controller{
             System.out.println("set image");
             m.setIcon(icon);
         }
+    }
+    public void startSlideshow(){
+
+    }
+    public void stopSlideshow(){
+
     }
 }

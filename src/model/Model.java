@@ -15,17 +15,10 @@ public class Model extends java.util.Observable{
     private File[] imageList;
     private FileFilter filter;
     private final String[] validextensions = ImageIO.getReaderFileSuffixes();
+    private Timer ssTimer;
+    private int prevWindowState;
+    private long delay = 0;
 
-    public ImageIcon getIcon() {
-        return icon;
-    }
-
-    public void setIcon(ImageIcon icon) {
-        this.icon = icon;
-        System.out.println("setting icon");
-        setChanged();
-        notifyObservers("newIcon");
-    }
 
     ImageIcon icon;
 
@@ -90,6 +83,41 @@ public class Model extends java.util.Observable{
             return null;
         }
         return name.substring(name.lastIndexOf(".") +1);
+    }
+
+    public long getDelay() {
+        return delay;
+    }
+
+    public void setDelay(long delay) {
+        this.delay = delay;
+    }
+
+    public ImageIcon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(ImageIcon icon) {
+        this.icon = icon;
+        System.out.println("setting icon");
+        setChanged();
+        notifyObservers("newIcon");
+    }
+
+    public Timer getSsTimer() {
+        return ssTimer;
+    }
+
+    public void setSsTimer(Timer ssTimer) {
+        this.ssTimer = ssTimer;
+    }
+
+    public int getPrevWindowState() {
+        return prevWindowState;
+    }
+
+    public void setPrevWindowState(int prevWindowState) {
+        this.prevWindowState = prevWindowState;
     }
 
 }
