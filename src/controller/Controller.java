@@ -13,9 +13,16 @@ import java.awt.event.*;
 
 public class Controller{
     Model m;
+    private Timer ssTimer;
 
     public Controller(Model m){
         this.m = m;
+        ssTimer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                nextImage();
+            }
+        });
     }
     public ActionListener getNextImageListener () {
         return new ActionListener() {
@@ -64,7 +71,7 @@ public class Controller{
             }
         };
     }
-    public MouseListener imageClickedListener(){
+    public MouseListener imageClickedListener(PictureView v){
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -120,11 +127,42 @@ public class Controller{
             }
         };
     }
-    public ActionListener slideshowListener(){
+    public ActionListener slideshowListener(PictureView v){
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startSlideshow();
+                if(ssTimer.isRunning() ){
+                    stopSlideshow(v);
+                }else{
+                    startSlideshow(v);
+                }
+            }
+        };
+    }
+    public MouseListener mouseMovementListener(PictureView v){
+        return new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                stopSlideshow(v);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
             }
         };
     }
@@ -133,7 +171,8 @@ public class Controller{
         chooser.showOpenDialog(comp);
         m.setDirectory(chooser.getSelectedFile());
     }
-    public void nextImage(){
+    public void nextImage(PictureView v){
+
         if(m.getIcon() != null) {
             int index = m.getIndex();
             int numFiles = m.getNumFiles();
@@ -151,7 +190,6 @@ public class Controller{
     public void previousImage(){
         if(m.getIcon() != null) {
             int index = m.getIndex();
-            int numFiles = m.getNumFiles();
             if (index > 0) {
                 index--;
                 m.setIndex(index);
@@ -174,10 +212,18 @@ public class Controller{
             m.setIcon(icon);
         }
     }
-    public void startSlideshow(){
+    public void startSlideshow(PictureView v){
+        if(m.getIcon() != null) {
+            m.setPrevWindowState(v.getExtendedState());
+            v.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            ssTimer.start();
+        }
 
     }
-    public void stopSlideshow(){
-
+    public void stopSlideshow(PictureView v){
+        if(ssTimer.isRunning()){
+            v.setExtendedState(m.getPrevWindowState());
+            ssTimer.stop();
+        }
     }
 }

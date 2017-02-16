@@ -2,6 +2,8 @@ package model;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
 
@@ -15,7 +17,6 @@ public class Model extends java.util.Observable{
     private File[] imageList;
     private FileFilter filter;
     private final String[] validextensions = ImageIO.getReaderFileSuffixes();
-    private Timer ssTimer;
     private int prevWindowState;
     private long delay = 0;
 
@@ -102,14 +103,6 @@ public class Model extends java.util.Observable{
         System.out.println("setting icon");
         setChanged();
         notifyObservers("newIcon");
-    }
-
-    public Timer getSsTimer() {
-        return ssTimer;
-    }
-
-    public void setSsTimer(Timer ssTimer) {
-        this.ssTimer = ssTimer;
     }
 
     public int getPrevWindowState() {
