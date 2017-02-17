@@ -21,6 +21,17 @@ public class Model extends java.util.Observable{
     private long delay = 0;
 
 
+    private final String helpMessage = "" +
+            "Start by selecting a folder with image icons from the File menu \n \n" +
+            "Once you have selected a folder, there are 6 ways to progress through the images: \n\n" +
+            "1. Click the next or previous buttons at the bottom of the screen\n" +
+            "2. Select the next or previous options from the File menu\n" +
+            "3. Click on the image to move to the next one\n" +
+            "4. Scroll down on the images to move to the next image. Scroll up to move to the previous image.\n" +
+            "5. Use the left and right arrow keys on your keyboard.\n" +
+            "6. Start a slideshow by clicking the slideshow button then click anywhere to stop." ;
+
+
     ImageIcon icon;
 
     public Model(){
@@ -110,6 +121,10 @@ public class Model extends java.util.Observable{
 
     public void setPrevWindowState(int prevWindowState) {
         this.prevWindowState = prevWindowState;
+    }
+
+    public String getHelpMessage() {
+        return helpMessage;
     }
 
 }

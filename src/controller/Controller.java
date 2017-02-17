@@ -38,6 +38,14 @@ public class Controller{
             }
         };
     }
+    public ActionListener getHelpListener(PictureView v, JOptionPane helpDialog){
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                helpDialog.showMessageDialog(v, m.getHelpMessage(), "Help", JOptionPane.PLAIN_MESSAGE);
+            }
+        };
+    }
     public ActionListener getSelectFolderListener(JFileChooser chooser, Component comp){
         return new ActionListener() {
             @Override

@@ -24,6 +24,8 @@ public class PictureView extends JFrame implements java.util.Observer {
     private JMenuItem mItemNext;
     private JMenuItem mItemPrevious;
     private JMenuItem mItemExit;
+    private JMenuItem mHelp;
+    private JOptionPane helpDialog;
     private JButton bPrevious;
     private JButton bNext;
     private JButton bSS;
@@ -51,6 +53,8 @@ public class PictureView extends JFrame implements java.util.Observer {
         mItemSelect = new JMenuItem("Select folder");
         mItemNext = new JMenuItem("Next image");
         mItemPrevious = new JMenuItem("Previous image");
+        mHelp = new JMenuItem("Help");
+        helpDialog = new JOptionPane();
         mItemExit = new JMenuItem("Exit");
         chooser = new JFileChooser();
         menuBar = new JMenuBar();
@@ -76,6 +80,7 @@ public class PictureView extends JFrame implements java.util.Observer {
         mFile.add(mItemPrevious);
         mFile.add(mItemExit);
         menuBar.add(mFile);
+        menuBar.add(mHelp);
         setJMenuBar(menuBar);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         controlPanel.add(bPrevious);
@@ -99,6 +104,7 @@ public class PictureView extends JFrame implements java.util.Observer {
         mItemNext.setAccelerator(KeyStroke.getKeyStroke(39, 0));
         mItemPrevious.setAccelerator(KeyStroke.getKeyStroke(37, 0));
         mItemSelect.addActionListener(c.getSelectFolderListener(chooser, mItemSelect));
+        mHelp.addActionListener(c.getHelpListener(this, helpDialog));
         mItemExit.addActionListener(c.getExitListener(this));
         imageLabel.addComponentListener(c.imageResizedListener());
         imageLabel.addMouseListener(c.imageClickedListener(this));
