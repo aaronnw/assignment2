@@ -5,13 +5,11 @@ import model.Model;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 
 
 /**
- * Created by Aaron on 2/11/2017.
+ * Main view class
  */
 public class PictureView extends JFrame implements java.util.Observer {
     private JPanel contentPane = new JPanel();
@@ -25,36 +23,33 @@ public class PictureView extends JFrame implements java.util.Observer {
     private JMenuItem mItemPrevious;
     private JMenuItem mItemExit;
     private JMenuItem mHelp;
-    private JOptionPane helpDialog;
     private JButton bPrevious;
     private JButton bNext;
     private JButton bSS;
     private JLabel directoryLabel;
     private JFileChooser chooser;
     private JLabel imageLabel;
-    private ImageIcon icon;
-    Model m;
-    Controller c;
+    private final Model m;
+    private final Controller c;
 
     public PictureView(final Model m, final Controller c) {
         super("MVC Picture Viewer");
         this.m = m;
         this.c = c;
-        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE);
         initializeComponents();
         createInterface();
         setListeners();
         this.setSize(600, 500);
         this.setLocationRelativeTo(null);
     }
-    public void initializeComponents(){
+    private void initializeComponents(){
         directoryLabel = new JLabel("No directory selected");
         mFile = new JMenu("File");
         mItemSelect = new JMenuItem("Select folder");
         mItemNext = new JMenuItem("Next image");
         mItemPrevious = new JMenuItem("Previous image");
         mHelp = new JMenuItem("Help");
-        helpDialog = new JOptionPane();
         mItemExit = new JMenuItem("Exit");
         chooser = new JFileChooser();
         menuBar = new JMenuBar();
@@ -71,9 +66,8 @@ public class PictureView extends JFrame implements java.util.Observer {
         contentPane.setLayout(new BorderLayout(0, 0));
         imageLabel = new JLabel("");
         imageLabel.setLayout(new BorderLayout(0,0));
-        icon = new ImageIcon();
     }
-    public void createInterface(){
+    private void createInterface(){
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         mFile.add(mItemSelect);
         mFile.add(mItemNext);
@@ -96,7 +90,7 @@ public class PictureView extends JFrame implements java.util.Observer {
         this.setContentPane(contentPane);
         this.pack();
     }
-    public void setListeners(){
+    private void setListeners(){
         bNext.addActionListener(c.getNextImageListener(this));
         mItemNext.addActionListener(c.getNextImageListener(this));
         bPrevious.addActionListener(c.getPreviousImageListener(this));
@@ -104,38 +98,30 @@ public class PictureView extends JFrame implements java.util.Observer {
         mItemNext.setAccelerator(KeyStroke.getKeyStroke(39, 0));
         mItemPrevious.setAccelerator(KeyStroke.getKeyStroke(37, 0));
         mItemSelect.addActionListener(c.getSelectFolderListener(chooser, mItemSelect));
-        mHelp.addActionListener(c.getHelpListener(this, helpDialog));
+        mHelp.addActionListener(c.getHelpListener(this));
         mItemExit.addActionListener(c.getExitListener(this));
         imageLabel.addComponentListener(c.imageResizedListener());
         imageLabel.addMouseListener(c.imageClickedListener(this));
         imageLabel.addMouseWheelListener(c.wheelScrollListener(this));
-        this.addMouseListener(c.mouseMovementListener(this));
+        picPanel.addMouseListener(c.mouseClickListener(this));
+        this.addMouseListener(c.mouseClickListener(this));
         bSS.addActionListener(c.slideshowListener(this));
     }
 
+    /*
+    When the model sends a command to its observers to update, this method is called
+    The method will be passed a string defining what changed
+     */
     @Override
     public void update(Observable obs, Object obj) {
         if(obj.toString().equals("newIcon")){
-            imageLabel.setIcon(scaleImage(m.getIcon()));
+            //Tell the controller to scale the image inside the picture panel
+            imageLabel.setIcon(c.scaleImage(picPanel));
             imageLabel.setText("");
         }
         if(obj.toString().equals("directorySet")){
             directoryLabel.setText(m.getDirectory().toString());
         }
     }
-    private ImageIcon scaleImage(ImageIcon old){
-        if(old.getImage() != null) {
-            //Get the original dimensions
-            double oldWidth = old.getIconWidth();
-            double oldHeight = old.getIconHeight();
-            //Find the aspect ratio
-            double ratio = oldWidth/oldHeight;
-            //Set the new width and height based on the ratio
-            double width  = Math.min(picPanel.getWidth(), picPanel.getHeight()*ratio);
-            double height = Math.min(picPanel.getHeight(), picPanel.getWidth()/ratio);
-            return new ImageIcon(old.getImage().getScaledInstance((int) width, (int) height, Image.SCALE_FAST));
 
-        }
-        return null;
-    }
 }

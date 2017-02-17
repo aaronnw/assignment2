@@ -2,46 +2,31 @@ package model;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.FileFilter;
 
-/**
- * Created by Aaron on 2/11/2017.
- */
 public class Model extends java.util.Observable{
     private int index = 0;
     private int numFiles = 0;
     private File directory;
     private File[] fileList;
-    private Image[] imageList;
-    private FileFilter filter;
-    private final String[] validextensions = ImageIO.getReaderFileSuffixes();
+    private final FileFilter filter;
+    private final String[] validExtensions = ImageIO.getReaderFileSuffixes();
     private int prevWindowState;
     private long delay = 0;
 
 
-    private final String helpMessage = "" +
-            "Start by selecting a folder with image icons from the File menu \n \n" +
-            "Once you have selected a folder, there are 6 ways to progress through the images: \n\n" +
-            "1. Click the next or previous buttons at the bottom of the screen\n" +
-            "2. Select the next or previous options from the File menu\n" +
-            "3. Click on the image to move to the next one\n" +
-            "4. Scroll down on the images to move to the next image. Scroll up to move to the previous image.\n" +
-            "5. Use the left and right arrow keys on your keyboard.\n" +
-            "6. Start a slideshow by clicking the slideshow button then click anywhere to stop." ;
-
-
-    ImageIcon icon;
+    private ImageIcon icon;
 
     public Model(){
+        //Sets up a file filter accepting valid image types for this system
         filter = new FileFilter(){
             @Override
             public boolean accept(File pathname){
                 String extension = getExtension(pathname);
                 //Check if the extension is in the valid list
-                for(String validext:validextensions){
-                    if(validext.equals(extension)){
+                for(String validExt : validExtensions){
+                    if(validExt.equals(extension)){
                         return true;
                     }
                 }
@@ -60,10 +45,6 @@ public class Model extends java.util.Observable{
 
     public int getNumFiles() {
         return numFiles;
-    }
-
-    public void setNumFiles(int numFiles) {
-        this.numFiles = numFiles;
     }
 
     public File getDirectory() {
@@ -89,7 +70,7 @@ public class Model extends java.util.Observable{
         return filter;
     }
 
-    public String getExtension(File f){
+    private String getExtension(File f){
         String name = f.toString();
         if(!name.contains(".")){
             return null;
@@ -124,6 +105,15 @@ public class Model extends java.util.Observable{
     }
 
     public String getHelpMessage() {
+        @SuppressWarnings("UnnecessaryLocalVariable") String helpMessage =
+                "Start by selecting a folder with image icons from the File menu \n \n" +
+                "Once you have selected a folder, there are 6 ways to progress through the images: \n\n" +
+                "1. Click the next or previous buttons at the bottom of the screen\n" +
+                "2. Select the next or previous options from the File menu\n" +
+                "3. Click on the image to move to the next one\n" +
+                "4. Scroll down on the images to move to the next image. Scroll up to move to the previous image.\n" +
+                "5. Use the left and right arrow keys on your keyboard.\n" +
+                "6. Start a slideshow by clicking the slideshow button then click anywhere to stop.";
         return helpMessage;
     }
 

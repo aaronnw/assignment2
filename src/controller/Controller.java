@@ -7,16 +7,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Created by Aaron on 2/11/2017.
- */
-
+@SuppressWarnings("ALL")
 public class Controller{
-    Model m;
-    private Timer ssTimer;
+    private final Model m;
+    private final Timer ssTimer;
 
     public Controller(Model m){
+        //Sets the model the controller will access
         this.m = m;
+        //Creates a timer that when started will automatically progress images for the slideshow
         ssTimer = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -24,6 +23,10 @@ public class Controller{
             }
         });
     }
+    /*
+        The following listener methods all perform actions in the controller
+        based on events in the view
+     */
     public ActionListener getNextImageListener (PictureView v) {
         return new ActionListener() {
             @Override public void actionPerformed (ActionEvent e) {
@@ -38,11 +41,11 @@ public class Controller{
             }
         };
     }
-    public ActionListener getHelpListener(PictureView v, JOptionPane helpDialog){
+    public ActionListener getHelpListener(PictureView v){
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                helpDialog.showMessageDialog(v, m.getHelpMessage(), "Help", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(v, m.getHelpMessage(), "Help", JOptionPane.PLAIN_MESSAGE);
             }
         };
     }
@@ -147,7 +150,7 @@ public class Controller{
             }
         };
     }
-    public MouseListener mouseMovementListener(PictureView v){
+    public MouseListener mouseClickListener(PictureView v){
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -175,12 +178,13 @@ public class Controller{
         };
     }
 
-    public void selectFolder(JFileChooser chooser, Component comp){
+    /*Lets the user select the image folder with a given file chooser*/
+    private void selectFolder(JFileChooser chooser, Component comp){
         chooser.showOpenDialog(comp);
         m.setDirectory(chooser.getSelectedFile());
     }
-    public void nextImage(PictureView v){
-        System.out.println("next");
+    /*Shifts the index and loads the next image*/
+    private void nextImage(PictureView v){
         if(ssTimer.isRunning()){
             stopSlideshow(v);
             return;
@@ -199,8 +203,8 @@ public class Controller{
         }
 
     }
-    public void previousImage(PictureView v){
-        System.out.println("prev");
+    /*Shifts the index and loads the previous image*/
+    private void previousImage(PictureView v){
         if(ssTimer.isRunning()){
             stopSlideshow(v);
             return;
@@ -218,16 +222,36 @@ public class Controller{
 
         }
     }
-    public void updateImageList(){
+    /*Sets the list of files in the model to the valid filtered files in a given directory*/
+    private void updateImageList(){
          m.setFileList(m.getDirectory().listFiles(m.getFilter()));
     }
-    public void setImage(){
+    /*Set the current icon based on the current index in the model*/
+    private void setImage(){
         if(m.getDirectory()!= null && m.getNumFiles()!= 0){
             ImageIcon icon = new ImageIcon(m.getFileList()[m.getIndex()].getAbsolutePath());
             m.setIcon(icon);
         }
     }
-    public void startSlideshow(PictureView v){
+    /*Scale the image and retain the aspect ratio*/
+    public ImageIcon scaleImage(JPanel p){
+        ImageIcon old = m.getIcon();
+        if(old.getImage() != null) {
+            //Get the original dimensions
+            double oldWidth = old.getIconWidth();
+            double oldHeight = old.getIconHeight();
+            //Find the aspect ratio
+            double ratio = oldWidth/oldHeight;
+            //Set the new width and height based on the ratio
+            double width  = Math.min(p.getWidth(), p.getHeight()*ratio);
+            double height = Math.min(p.getHeight(), p.getWidth()/ratio);
+            return new ImageIcon(old.getImage().getScaledInstance((int) width, (int) height, Image.SCALE_FAST));
+
+        }
+        return null;
+    }
+    /*Make the frame full-screen and start the slideshow timer*/
+    private void startSlideshow(PictureView v){
         if(m.getIcon() != null) {
             m.setPrevWindowState(v.getExtendedState());
             v.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -235,13 +259,17 @@ public class Controller{
         }
 
     }
-    public void stopSlideshow(PictureView v){
+    /*Stop the slide-show timer and revert the previous frame size*/
+    private void stopSlideshow(PictureView v){
         if(ssTimer.isRunning()){
             v.setExtendedState(m.getPrevWindowState());
             ssTimer.stop();
         }
     }
-    public void ssNext(){
+    /*Used for the slideshow method to progress
+    The normal nextImage method stops the slideshow if it is running
+     */
+    private void ssNext(){
         if(m.getIcon() != null) {
             int index = m.getIndex();
             int numFiles = m.getNumFiles();
