@@ -122,10 +122,11 @@ public class Controller{
                 }
                 if (e.getWheelRotation() > 0) {
                     nextImage(v);
-                } else {
+                    m.setDelay(System.currentTimeMillis());
+                } else if(e.getWheelRotation() < 0){
                     previousImage(v);
+                    m.setDelay(System.currentTimeMillis());
                 }
-                m.setDelay(System.currentTimeMillis());
             }
         };
     }
